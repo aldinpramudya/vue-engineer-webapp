@@ -1,6 +1,6 @@
 <template>
     <div>
-        this is about page
+        this is report page
     </div>
 </template>
 
