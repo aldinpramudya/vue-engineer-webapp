@@ -1,6 +1,6 @@
 <template>
     <div>
-        this is master data of COA
+        <TitlePage title="Master Data Of Transaction"/>
     </div>
 </template>
 

@@ -30,10 +30,6 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-const isOpen = ref(false)
-
 const links = [
     { id: 1, name: 'Home', path: '/' },
     { id: 2, name: 'Categories Of Coa', path: '/categories' },

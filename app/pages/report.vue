@@ -1,6 +1,6 @@
 <template>
     <div>
-        this is report page
+        <TitlePage title="Report Page"/>
     </div>
 </template>
 

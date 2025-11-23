@@ -1,13 +1,9 @@
 <template>
     <div>
-        this is transaction page
+        <TitlePage title="Transaction Page"/>
     </div>
 </template>
 
 <script setup>
 
 </script>
-
-<style lang="scss" scoped>
-
-</style>
