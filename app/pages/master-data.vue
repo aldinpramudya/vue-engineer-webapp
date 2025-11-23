@@ -70,7 +70,7 @@
                                             </button>
 
                                             <!-- Delete Button -->
-                                            <button @click="$emit('delete', item)"
+                                            <button @click="handleDelete(item)"
                                                 class="inline-flex items-center gap-1 px-3 py-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition-colors"
                                                 title="Delete">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
@@ -109,6 +109,21 @@ const dataMasters = computed(() => {
     }))
 })
 // Get Data Master End
+
+// Handle Delete
+const handleDelete = async (item) => {
+    try {
+        await $fetch(`http://127.0.0.1:8000/api/masters-coa/${item.id}`, {
+            method: "DELETE",
+        })
+        console.log("Data Berhasil Dihapuskan")
+        refresh();
+    } catch (err) {
+        console.log("Data Gagal Dihapuskan")
+    }
+}
+
+// Handle Delete End
 
 // Column Table
 const columns = [
