@@ -22,9 +22,11 @@
 
         <div class="grid grid-cols-4 gap-4 pt-5" v-if="categories.length">
             <CategoriesCard v-for="item in categories" :key="item.id" :name="item.name_category"
-                @delete="handleDelete(item)" />
+                @delete="handleDelete(item)" @edit="handleEdit(item)" />
         </div>
 
+        <CategoryEditCategoryModal :show="showEditModal" :category="selectedCategory" @close="showEditModal = false"
+            @saved="fetchData" />
     </div>
 </template>
 
@@ -51,7 +53,13 @@ const handleDelete = async (item) => {
 // Handle Delete End
 
 // Handle Edit
+const showEditModal = ref(false)
+const selectedCategory = ref(null)
 
+const handleEdit = (item) => {
+    selectedCategory.value = { ...item } 
+    showEditModal.value = true
+}
 
 // Handle Edit End
 
