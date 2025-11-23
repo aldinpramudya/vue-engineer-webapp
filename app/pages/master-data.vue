@@ -3,11 +3,12 @@
         <TitlePage title="Master Data Of Transaction" />
         <div class="pt-5">
             <!-- Button New Master Data -->
-            <button @click="isModalOpen = true" class="px-4 py-2 font-bold rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition">
+            <button @click="isModalOpen = true"
+                class="px-4 py-2 font-bold rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition">
                 Add New Master Data
             </button>
 
-            <MasterNewMasterModal :show="isModalOpen" @close="isModalOpen = false" @saved="fetchData"/>
+            <MasterNewMasterModal :show="isModalOpen" @close="isModalOpen = false" @saved="fetchData" />
             <!-- Button New Master Data -->
             <!-- Table -->
             <div class="pt-5">
@@ -57,7 +58,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center justify-end gap-2">
                                             <!-- Edit Button -->
-                                            <button @click="$emit('edit', item)"
+                                            <button @click="handleEdit(item)"
                                                 class="inline-flex items-center gap-1 px-3 py-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
                                                 title="Edit">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor"
@@ -92,6 +93,9 @@
                 </div>
             </div>
             <!-- Table End -->
+
+            <MasterEditMasterModal :show="showEditModal" :master-data="selectedMasterData" :categories="categories"
+                @close="showEditModal = false" @saved="fetchData" />
         </div>
     </div>
 </template>
@@ -122,8 +126,37 @@ const handleDelete = async (item) => {
         console.log("Data Gagal Dihapuskan")
     }
 }
-
 // Handle Delete End
+
+// Handle Edit
+const showEditModal = ref(false)
+const selectedMasterData = ref(null)
+
+// Categories state
+const categories = ref([]);
+
+const fetchCategories = async () => {
+    try {
+        const res = await $fetch("http://127.0.0.1:8000/api/categories-coa")
+        categories.value = res.data   // API kamu punya key "data"
+    } catch (error) {
+        console.error("Failed to fetch categories:", error)
+    }
+}
+
+onMounted(() => {
+    fetchCategories()
+})
+
+
+const handleEdit = (item) => {
+    selectedMasterData.value = { ...item }
+    showEditModal.value = true;
+}
+
+
+
+// Handle Edit End
 
 // Column Table
 const columns = [

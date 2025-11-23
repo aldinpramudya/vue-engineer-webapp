@@ -64,7 +64,6 @@ const category_coa_id = ref("");
 // Category List
 const categories = ref([]);
 
-// Fetch Categories WHEN modal is shown
 watch(
     () => props.show,
     async (val) => {
