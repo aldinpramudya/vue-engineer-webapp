@@ -7,6 +7,8 @@
                 class="px-4 py-2 font-bold rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition">
                 Add New Data Transaction
             </button>
+
+            <TransactionNewTransactionModal :show="isModalOpen" @close="isModalOpen = false" @saved="fetchData" />
             <!-- Button Open Modal End -->
 
             <!-- Table -->

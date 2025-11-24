@@ -29,14 +29,12 @@
                                 {{ cat.name_category }}
                             </option>
                         </select>
-
                     </div>
                 </div>
                 <div class="mt-4 flex justify-end gap-2">
                     <button type="button" @click="handleClose" class="px-3 py-1 bg-gray-300 rounded">
                         Cancel
                     </button>
-
                     <button type="submit" class="px-3 py-1 bg-blue-600 text-white rounded">
                         Save
                     </button>
