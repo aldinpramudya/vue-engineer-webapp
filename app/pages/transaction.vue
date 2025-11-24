@@ -96,6 +96,7 @@
                 </div>
             </div>
             <!-- Table End -->
+             <TransactionEditTransactionModal :show="showEditModal" :transaction-data="selectedTransactionData" :master-data="dataMasters" @close="showEditModal = false" @saved="fetchData" />
         </div>
     </div>
 </template>
