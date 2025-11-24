@@ -25,7 +25,7 @@
                                         {{ column.label }}
                                     </th>
                                     <th
-                                        class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Actions
                                     </th>
                                 </tr>
@@ -55,8 +55,8 @@
                                         </slot>
                                     </td>
                                     <!-- Buttons -->
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex items-center justify-end gap-2">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <div class="flex items-center justify-center gap-2">
                                             <!-- Edit Button -->
                                             <button @click="handleEdit(item)"
                                                 class="inline-flex items-center gap-1 px-3 py-1.5 text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
@@ -138,7 +138,7 @@ const categories = ref([]);
 const fetchCategories = async () => {
     try {
         const res = await $fetch("http://127.0.0.1:8000/api/categories-coa")
-        categories.value = res.data   // API kamu punya key "data"
+        categories.value = res.data
     } catch (error) {
         console.error("Failed to fetch categories:", error)
     }
@@ -153,9 +153,6 @@ const handleEdit = (item) => {
     selectedMasterData.value = { ...item }
     showEditModal.value = true;
 }
-
-
-
 // Handle Edit End
 
 // Column Table

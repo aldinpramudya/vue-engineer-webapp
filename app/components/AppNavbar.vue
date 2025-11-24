@@ -13,7 +13,7 @@
                         <li v-for="link in links" :key="link.id">
                             <NuxtLink :to="link.path"
                                 class="px-4 py-2 rounded-md text-gray-600 font-medium hover:text-(--main-color) hover:bg-blue-50 transition-colors duration-200"
-                                active-class="text-blue-600 bg-blue-50">
+                                active-class="text-blue-600 bg-blue-100">
                                 {{ link.name }}
                             </NuxtLink>
                         </li>
