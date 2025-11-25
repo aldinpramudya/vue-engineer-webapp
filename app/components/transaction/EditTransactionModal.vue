@@ -45,6 +45,9 @@
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
     transactionData: Object,
@@ -93,6 +96,15 @@ const handleEdit = async () => {
                 credit: form.value.credit,
             }
         });
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil Diedit.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         emit("saved");
         emit("close");
     } catch (err) {

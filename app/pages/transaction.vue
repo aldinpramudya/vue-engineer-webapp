@@ -96,12 +96,15 @@
                 </div>
             </div>
             <!-- Table End -->
-             <TransactionEditTransactionModal :show="showEditModal" :transaction-data="selectedTransactionData" :master-data="dataMasters" @close="showEditModal = false" @saved="fetchData" />
+            <TransactionEditTransactionModal :show="showEditModal" :transaction-data="selectedTransactionData"
+                :master-data="dataMasters" @close="showEditModal = false" @saved="fetchData" />
         </div>
     </div>
 </template>
 
 <script setup>
+import Swal from "sweetalert2"
+
 // Get Data Transaction
 const { data: response, pending, error, refresh } = await useFetch("http://127.0.0.1:8000/api/transactions", {
     method: "GET",
@@ -117,10 +120,32 @@ const dataTransactions = computed(() => {
 
 // Handle Delete
 const handleDelete = async (item) => {
+    const result = await Swal.fire({
+        title: "Hapus Data?",
+        text: `Anda yakin ingin menghapus Transaksi ini ?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Hapus",
+        cancelButtonText: "Batal",
+    })
+
+    if (!result.isConfirmed) {
+        return
+    }
+
     try {
         await $fetch(`http://127.0.0.1:8000/api/transactions/${item.id}`, {
             method: "DELETE",
         })
+
+         Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil dihapus.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         console.log("Data Berhasil Dihapuskan")
         refresh();
     } catch (err) {

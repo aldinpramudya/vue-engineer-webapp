@@ -52,6 +52,9 @@
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
 });
@@ -95,6 +98,11 @@ const loadMastersData = async () => {
 
 // Submit Form Handler
 const submitForm = async () => {
+    if (!masters_coa_id.value || !description.value || (!debit.value && !credit.value)) {
+        Swal.fire("Oops!", "Semua field wajib diisi", "warning");
+        return;
+    }
+
     try {
         await $fetch("http://127.0.0.1:8000/api/transactions", {
             method: "POST",
@@ -105,6 +113,15 @@ const submitForm = async () => {
                 credit: credit.value
             }
         });
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data baru berhasil disimpan.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        });
+
         emit("saved");
         handleClose();
     } catch (error) {
