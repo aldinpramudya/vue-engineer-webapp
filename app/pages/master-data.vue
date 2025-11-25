@@ -101,6 +101,7 @@
 </template>
 
 <script setup>
+import Swal from "sweetalert2"
 
 // Get Data Master
 const { data: response, pending, error, refresh } = await useFetch("http://127.0.0.1:8000/api/masters-coa", {
@@ -116,10 +117,32 @@ const dataMasters = computed(() => {
 
 // Handle Delete
 const handleDelete = async (item) => {
+    const result = await Swal.fire({
+        title: "Hapus Data?",
+        text: `Anda yakin ingin menghapus kategori "${item.name}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Hapus",
+        cancelButtonText: "Batal",
+    })
+
+    if (!result.isConfirmed) {
+        return
+    }
+
     try {
         await $fetch(`http://127.0.0.1:8000/api/masters-coa/${item.id}`, {
             method: "DELETE",
         })
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil dihapus.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         console.log("Data Berhasil Dihapuskan")
         refresh();
     } catch (err) {

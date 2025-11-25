@@ -37,6 +37,9 @@
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
     masterData: Object,
@@ -82,6 +85,15 @@ const handleEdit = async () => {
                 category_coa_id: form.value.category_coa_id,
             }
         });
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil Diedit.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         emit("saved");
         emit("close");
     } catch (err) {

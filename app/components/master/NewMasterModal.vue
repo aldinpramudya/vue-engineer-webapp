@@ -46,6 +46,9 @@
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
 });
@@ -73,20 +76,25 @@ watch(
 
 const handleClose = () => {
     code.value = "",
-    name.value = "",
-    category_coa_id.value = "",
-    emit("close");
+        name.value = "",
+        category_coa_id.value = "",
+        emit("close");
 }
 
 // Load Pilihan Category
 const loadCategories = async () => {
     const res = await $fetch("http://127.0.0.1:8000/api/categories-coa");
-    categories.value = res.data; 
+    categories.value = res.data;
 }
 // Load Pilihan Category End
 
 // Input New Data Master
 const submitForm = async () => {
+    if (!code.value || !name.value || !category_coa_id.value) {
+        Swal.fire("Oops!", "Semua field wajib diisi", "warning");
+        return;
+    }
+
     try {
         await $fetch("http://127.0.0.1:8000/api/masters-coa", {
             method: "POST",
@@ -96,6 +104,14 @@ const submitForm = async () => {
                 category_coa_id: category_coa_id.value
             }
         });
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data baru berhasil disimpan.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         emit("saved");
         handleClose();
     } catch (err) {
