@@ -10,7 +10,7 @@
                 <label class="block mb-2 font-semibold">Pilih Tahun</label>
                 <input type="number" v-model="year" class="border p-2 rounded w-full mb-4" />
 
-                <button @click="getMonthlyReport" class="bg-blue-600 text-white px-4 py-2 rounded">
+                <button @click="loadReport" class="bg-blue-600 text-white px-4 py-2 rounded">
                     Load Report
                 </button>
             </div>
@@ -23,29 +23,66 @@
             <!-- Loading -->
             <div v-if="loading" class="text-gray-500">Loading...</div>
 
-            <!-- Table -->
-            <table v-if="report.length > 0" class="w-full border mt-4">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="p-2 border">Category</th>
-                        <th class="p-2 border">Total Debit</th>
-                        <th class="p-2 border">Total Credit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in report" :key="item.category_id">
-                        <td class="p-2 border">{{ item.category_name }}</td>
-                        <td class="p-2 border">{{ item.total_debit }}</td>
-                        <td class="p-2 border">{{ item.total_credit }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- TABLE -->
+            <div v-if="income.length || expenses.length">
+                <table class="w-full border">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="p-2 border">Category</th>
+                            <th class="p-2 border">Amount</th>
+                        </tr>
+                    </thead>
 
-            <!-- Export -->
-            <button v-if="report.length > 0" @click="exportExcel"
-                class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
-                Export to Excel
-            </button>
+                    <tbody>
+                        <!-- INCOME SECTION -->
+                        <tr class="bg-green-200 font-bold">
+                            <td class="p-2 border" colspan="2">INCOME</td>
+                        </tr>
+
+                        <tr v-for="item in income" :key="item.category_id" class="bg-green-50">
+                            <td class="p-2 border">{{ item.category_name }}</td>
+                            <td class="p-2 border text-right">
+                                {{ formatAmount(item.total_credit - item.total_debit) }}
+                            </td>
+                        </tr>
+
+                        <!-- Total Income -->
+                        <tr class="bg-green-300 font-bold">
+                            <td class="p-2 border">Total Income</td>
+                            <td class="p-2 border text-right">{{ totalIncomeFormatted }}</td>
+                        </tr>
+
+                        <!-- EXPENSES SECTION -->
+                        <tr class="bg-red-200 font-bold">
+                            <td class="p-2 border" colspan="2">EXPENSES</td>
+                        </tr>
+
+                        <tr v-for="item in expenses" :key="item.category_id" class="bg-red-50">
+                            <td class="p-2 border">{{ item.category_name }}</td>
+                            <td class="p-2 border text-right">
+                                -{{ formatAmount(item.total_debit - item.total_credit) }}
+                            </td>
+                        </tr>
+
+                        <!-- Total Expenses -->
+                        <tr class="bg-red-300 font-bold">
+                            <td class="p-2 border">Total Expenses</td>
+                            <td class="p-2 border text-right">-{{ totalExpensesFormatted }}</td>
+                        </tr>
+
+                        <!-- NET INCOME -->
+                        <tr class="bg-yellow-200 font-bold">
+                            <td class="p-2 border text-center">Net Income</td>
+                            <td class="p-2 border text-right">{{ formatAmount(netIncome) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Export -->
+                <button @click="exportExcel" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
+                    Export to Excel
+                </button>
+            </div>
         </div>
     </div>
 </template>
@@ -53,46 +90,71 @@
 <script setup>
 const month = ref('')
 const year = ref('')
-
-const report = ref([])
 const loading = ref(false)
 const errorMessage = ref('')
 
-const getMonthlyReport = async () => {
-    if (!month.value || !year.value) {
-        errorMessage.value = "Bulan dan tahun wajib diisi."
-        return
-    }
+const income = ref([])
+const expenses = ref([])
 
-    loading.value = true
-    errorMessage.value = ''
+const totalAllDebit = ref(0)
+const totalAllCredit = ref(0)
+const netIncome = ref(0)
 
-    const { data, error } = await useFetch(
-        'http://localhost:8000/api/get-laporan-profit-loss',
-        {
-            method: 'GET',
-            params: {
-                month: month.value,
-                year: year.value
-            }
-        }
-    )
+// Format angka
+const formatAmount = (val) =>
+  Number(val).toLocaleString("id-ID", { minimumFractionDigits: 0 })
 
-    if (error.value) {
-        errorMessage.value = "Gagal mengambil data"
-    } else {
-        report.value = data.value.data
-    }
+// Total per kategori
+const totalIncomeFormatted = computed(() =>
+  formatAmount(totalAllCredit.value)
+)
 
-    loading.value = false
+const totalExpensesFormatted = computed(() =>
+  formatAmount(totalAllDebit.value)
+)
+
+// LOAD REPORT
+const loadReport = async () => {
+  if (!month.value || !year.value) {
+    errorMessage.value = "Bulan dan tahun wajib diisi."
+    return
+  }
+
+  loading.value = true
+  errorMessage.value = ""
+
+  try {
+    const res = await $fetch("http://127.0.0.1:8000/api/get-laporan-profit-loss", {
+      method: "GET",
+      query: {
+        month: month.value,
+        year: year.value
+      }
+    })
+
+    // langsung ambil dari API
+    totalAllDebit.value = res.total_all_debit
+    totalAllCredit.value = res.total_all_credit
+    netIncome.value = res.net_income
+
+    // pisahkan income & expenses otomatis berdasarkan nilai debit/credit
+    income.value = res.data.filter(i => Number(i.total_credit) > 0)
+    expenses.value = res.data.filter(i => Number(i.total_debit) > 0)
+
+  } catch (err) {
+    errorMessage.value = "Gagal mengambil data"
+    console.error(err)
+  }
+
+  loading.value = false
 }
 
-// export excel
+// EXPORT
 const exportExcel = () => {
-    if (!month.value || !year.value) return
+  if (!month.value || !year.value) return
 
-    window.location.href =
-        `http://localhost:8000/api/excel-report-export?month=${month.value}&year=${year.value}`
+  window.location.href =
+    "http://127.0.0.1:8000/api/excel-report-export"
 }
 
 </script>
