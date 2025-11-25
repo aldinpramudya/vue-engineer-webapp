@@ -114,6 +114,7 @@ const dataTransactions = computed(() => {
         ...item,
         code: item.master_coa.code,
         name: item.master_coa.name,
+        type_category : item.master_coa.category_coa.type_category,
     }));
 });
 // Get Data Transaction End
@@ -186,6 +187,7 @@ const columns = [
     { key: 'code', label: 'Master Code' },
     { key: 'name', label: 'Master Data Name' },
     { key: 'description', label: 'Description Transaction' },
+    { key: 'type_category', label: 'Type Category' },
     { key: 'debit', label: 'Debit' },
     { key: 'credit', label: 'Credit' }
 ]

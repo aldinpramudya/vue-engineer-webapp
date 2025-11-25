@@ -21,7 +21,7 @@
         </div>
 
         <div class="grid grid-cols-4 gap-4 pt-5" v-if="categories.length">
-            <CategoriesCard v-for="item in categories" :key="item.id" :name="item.name_category"
+            <CategoriesCard v-for="item in categories" :key="item.id" :name="item.name_category" :type_category="item.type_category"
                 @delete="handleDelete(item)" @edit="handleEdit(item)" />
         </div>
 

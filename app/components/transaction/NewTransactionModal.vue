@@ -26,14 +26,9 @@
                             placeholder="Enter Description of Your Transaction">
                     </div>
                     <div>
-                        <label for="debit">Debit</label>
-                        <input v-model="debit" type="number" class="w-full border rounded-lg px-3 py-2 mb-4"
-                            placeholder="Enter Debit of Your Transaction">
-                    </div>
-                    <div>
-                        <label for="credit">Credit</label>
-                        <input v-model="credit" type="number" class="w-full border rounded-lg px-3 py-2 mb-4"
-                            placeholder="Enter Credit of Your Transaction">
+                        <label for="amout">Amount</label>
+                        <input v-model="amount" type="number" class="w-full border rounded-lg px-3 py-2 mb-4"
+                            placeholder="Enter Amount of Your Transaction">
                     </div>
                 </div>
                 <!-- Input Data Transaction End -->
@@ -67,15 +62,13 @@ const emit = defineEmits([
 // Input State
 const masters_coa_id = ref("");
 const description = ref("");
-const debit = ref(0);
-const credit = ref(0);
+const amount = ref(0);
 
 const handleClose = () => {
     masters_coa_id.value = "",
         description.value = "",
-        debit.value = 0,
-        credit.value = 0,
-        emit("close");
+        amount.value = 0;
+    emit("close");
 }
 
 // Load Pilihan Master Data COA
@@ -98,7 +91,7 @@ const loadMastersData = async () => {
 
 // Submit Form Handler
 const submitForm = async () => {
-    if (!masters_coa_id.value || !description.value || (!debit.value && !credit.value)) {
+    if (!masters_coa_id.value || !description.value || !amount.value) {
         Swal.fire("Oops!", "Semua field wajib diisi", "warning");
         return;
     }
@@ -109,8 +102,7 @@ const submitForm = async () => {
             body: {
                 masters_coa_id: masters_coa_id.value,
                 description: description.value,
-                debit: debit.value,
-                credit: credit.value
+                amount: amount.value,
             }
         });
 

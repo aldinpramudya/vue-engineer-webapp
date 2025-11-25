@@ -13,6 +13,16 @@
                 <input v-model="name_category" type="text" class="w-full border rounded-lg px-3 py-2 mb-4"
                     placeholder="Enter Your New Category Name">
                 <!-- Input New Category End -->
+                <!-- Input Type Category -->
+                <select v-model="type_category" class="w-full border rounded-lg px-3 py-2 mb-4"
+                    placeholder="Pick Your Type Category">
+                    <option value="">Select Category </option>
+                    <option v-for="value in type_category_data" :key="value.id" :value="value.value">
+                        {{ value.text }}
+                    </option>
+                </select>
+
+                <!-- Input Type Category End -->
                 <!-- Action Button -->
                 <div class="flex justify-end gap-3 mt-4">
                     <button type="button" @click="handleClose"
@@ -45,15 +55,22 @@ const emit = defineEmits([
 
 const handleClose = () => {
     name_category.value = ""
+    type_category.value = "";
     emit("close")
 }
 
 // Input New Category
 const name_category = ref("")
+const type_category = ref("");
+
+const type_category_data = [
+    { id: 1 ,value: "Expenses", text: "Expenses" },
+    { id: 2 ,value: "Income", text: "Income" }
+]
 
 const submitForm = async () => {
-    if (!name_category.value) {
-        Swal.fire("Oops!", "Nama Kategori COA Wajib Diisi", "warning")
+    if (!name_category.value | !type_category.value) {
+        Swal.fire("Oops!", "Seluruh Data Wajib Diisi", "warning")
         return
     }
 
@@ -62,6 +79,7 @@ const submitForm = async () => {
             method: "POST",
             body: {
                 name_category: name_category.value,
+                type_category: type_category.value,
             }
         })
 

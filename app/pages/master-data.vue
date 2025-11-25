@@ -110,7 +110,8 @@ const { data: response, pending, error, refresh } = await useFetch("http://127.0
 const dataMasters = computed(() => {
     return (response.value?.data ?? []).map(item => ({
         ...item,
-        name_category: item.category_coa.name_category
+        name_category: item.category_coa.name_category,
+        type_category: item.category_coa.type_category
     }))
 })
 // Get Data Master End
@@ -184,6 +185,7 @@ const columns = [
     { key: 'code', label: 'Code' },
     { key: 'name', label: 'Name' },
     { key: 'name_category', label: 'Category' },
+    { key: 'type_category', label: 'Type' },
 ];
 // Column Table End
 

@@ -4,6 +4,7 @@
         <div class="flex flex-col justify-between">
             <div>
                 <p class="text-2xl font-bold text-gray-900 mt-1">{{ name }}</p>
+                <p class="text-2xl font-bold text-gray-900 mt-1">{{ type_category }}</p>
             </div>
             <!-- Button Edit and Delete -->
             <div class="flex gap-3 mt-4">
@@ -29,5 +30,9 @@ const props = defineProps({
         type: String,
         default: "Category Card"
     },
+    type_category : {
+        type: String,
+        default : "Type Category"
+    }
 })
 </script>
