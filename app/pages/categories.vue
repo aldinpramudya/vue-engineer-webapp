@@ -31,6 +31,8 @@
 </template>
 
 <script setup>
+import Swal from "sweetalert2"
+
 // Fetch Get Data 
 const { data: response, pending, error, refresh } = await useFetch("http://127.0.0.1:8000/api/categories-coa", {
     method: "GET",
@@ -40,10 +42,31 @@ const categories = computed(() => response.value?.data ?? [])
 
 // Handle Delete
 const handleDelete = async (item) => {
+    const result = await Swal.fire({
+        title: "Hapus Data?",
+        text: `Anda yakin ingin menghapus kategori "${item.name_category}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, Hapus",
+        cancelButtonText: "Batal",
+    })
+
+    if (!result.isConfirmed) {
+        return
+    }
+
     try {
         await $fetch(`http://127.0.0.1:8000/api/categories-coa/${item.id}`, {
             method: "DELETE",
         })
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil dihapus.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         console.log("Data Berhasil Dihapuskan")
         refresh();
     } catch (err) {
@@ -57,7 +80,7 @@ const showEditModal = ref(false)
 const selectedCategory = ref(null)
 
 const handleEdit = (item) => {
-    selectedCategory.value = { ...item } 
+    selectedCategory.value = { ...item }
     showEditModal.value = true
 }
 

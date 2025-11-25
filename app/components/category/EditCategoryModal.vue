@@ -5,26 +5,26 @@
                 Edit Category
             </p>
             <!-- Edit Form -->
-            <input 
-                v-model="form.name_category" 
-                class="border rounded w-full p-2" 
-                placeholder="Category Name" />
+            <input v-model="form.name_category" class="border rounded w-full p-2" placeholder="Category Name" />
             <!-- Edit Form End -->
             <!-- Buttons Start-->
-             <div class="mt-4 flex justify-end gap-2">
+            <div class="mt-4 flex justify-end gap-2">
                 <button class="px-3 py-1 bg-gray-300 rounded" @click="close">
                     Cancel
                 </button>
                 <button class="px-3 py-1 bg-blue-600 text-white rounded" @click="handleEdit">
                     Save
                 </button>
-             </div>
+            </div>
             <!-- Buttons End -->
         </div>
     </div>
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
     category: Object
@@ -36,7 +36,7 @@ const emit = defineEmits([
 ]);
 
 const close = () => {
-  emit("close");
+    emit("close");
 };
 
 const form = ref({
@@ -63,6 +63,15 @@ const handleEdit = async () => {
                 name_category: form.value.name_category
             }
         });
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data berhasil Diedit.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
 
         emit("saved");
         emit("close");

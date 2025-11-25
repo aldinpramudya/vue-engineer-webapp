@@ -15,7 +15,8 @@
                 <!-- Input New Category End -->
                 <!-- Action Button -->
                 <div class="flex justify-end gap-3 mt-4">
-                    <button type="button" @click="handleClose" class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
+                    <button type="button" @click="handleClose"
+                        class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
                         Cancel
                     </button>
                     <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">
@@ -30,6 +31,9 @@
 </template>
 
 <script setup>
+// Sweet Alert 
+import Swal from "sweetalert2"
+
 const props = defineProps({
     show: Boolean,
 })
@@ -48,6 +52,11 @@ const handleClose = () => {
 const name_category = ref("")
 
 const submitForm = async () => {
+    if (!name_category.value) {
+        Swal.fire("Oops!", "Nama Kategori COA Wajib Diisi", "warning")
+        return
+    }
+
     try {
         const response = await $fetch("http://127.0.0.1:8000/api/categories-coa", {
             method: "POST",
@@ -55,9 +64,18 @@ const submitForm = async () => {
                 name_category: name_category.value,
             }
         })
+
+        Swal.fire({
+            title: "Berhasil!",
+            text: "Data baru berhasil disimpan.",
+            icon: "success",
+            timer: 1500,
+            showConfirmButton: true,
+        })
+
         console.log("Data Berhasil diinputkan")
 
-        emit("saved") 
+        emit("saved")
         handleClose();
     } catch (err) {
         console.log("Data Gagal diinputkan")
