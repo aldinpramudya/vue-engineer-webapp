@@ -36,5 +36,6 @@ const links = [
     { id: 3, name: 'Master Data Coa', path: '/master-data' },
     { id: 4, name: 'Transaction', path: '/transaction' },
     { id: 5, name: 'Report Profit/Loss', path: '/report' },
+    { id: 6, name: 'Yearly Report', path: '/yearReport' },
 ]
 </script>

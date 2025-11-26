@@ -132,12 +132,10 @@ const loadReport = async () => {
             }
         })
 
-        // langsung ambil dari API
         totalAllDebit.value = res.total_all_debit
         totalAllCredit.value = res.total_all_credit
         netIncome.value = res.net_income
 
-        // pisahkan income & expenses otomatis berdasarkan nilai debit/credit
         income.value = res.data.filter(i => Number(i.total_credit) > 0)
         expenses.value = res.data.filter(i => Number(i.total_debit) > 0)
 
