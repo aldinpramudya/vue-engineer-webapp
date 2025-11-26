@@ -102,59 +102,64 @@ const netIncome = ref(0)
 
 // Format angka
 const formatAmount = (val) =>
-  Number(val).toLocaleString("id-ID", { minimumFractionDigits: 0 })
+    Number(val).toLocaleString("id-ID", { minimumFractionDigits: 0 })
 
 // Total per kategori
 const totalIncomeFormatted = computed(() =>
-  formatAmount(totalAllCredit.value)
+    formatAmount(totalAllCredit.value)
 )
 
 const totalExpensesFormatted = computed(() =>
-  formatAmount(totalAllDebit.value)
+    formatAmount(totalAllDebit.value)
 )
 
 // LOAD REPORT
 const loadReport = async () => {
-  if (!month.value || !year.value) {
-    errorMessage.value = "Bulan dan tahun wajib diisi."
-    return
-  }
+    if (!month.value || !year.value) {
+        errorMessage.value = "Bulan dan tahun wajib diisi."
+        return
+    }
 
-  loading.value = true
-  errorMessage.value = ""
+    loading.value = true
+    errorMessage.value = ""
 
-  try {
-    const res = await $fetch("http://127.0.0.1:8000/api/get-laporan-profit-loss", {
-      method: "GET",
-      query: {
-        month: month.value,
-        year: year.value
-      }
-    })
+    try {
+        const res = await $fetch("http://127.0.0.1:8000/api/get-laporan-profit-loss", {
+            method: "GET",
+            query: {
+                month: month.value,
+                year: year.value
+            }
+        })
 
-    // langsung ambil dari API
-    totalAllDebit.value = res.total_all_debit
-    totalAllCredit.value = res.total_all_credit
-    netIncome.value = res.net_income
+        // langsung ambil dari API
+        totalAllDebit.value = res.total_all_debit
+        totalAllCredit.value = res.total_all_credit
+        netIncome.value = res.net_income
 
-    // pisahkan income & expenses otomatis berdasarkan nilai debit/credit
-    income.value = res.data.filter(i => Number(i.total_credit) > 0)
-    expenses.value = res.data.filter(i => Number(i.total_debit) > 0)
+        // pisahkan income & expenses otomatis berdasarkan nilai debit/credit
+        income.value = res.data.filter(i => Number(i.total_credit) > 0)
+        expenses.value = res.data.filter(i => Number(i.total_debit) > 0)
 
-  } catch (err) {
-    errorMessage.value = "Gagal mengambil data"
-    console.error(err)
-  }
+    } catch (err) {
+        errorMessage.value = "Gagal mengambil data"
+        console.error(err)
+    }
 
-  loading.value = false
+    loading.value = false
 }
 
 // EXPORT
 const exportExcel = () => {
-  if (!month.value || !year.value) return
+    if (!month.value || !year.value) {
+        errorMessage.value = "Bulan dan tahun wajib diisi untuk export."
+        return
+    }
 
-  window.location.href =
-    "http://127.0.0.1:8000/api/excel-report-export"
+    window.open(
+        `http://127.0.0.1:8000/api/excel-report-export?month=${month.value}&year=${year.value}`,
+        "_blank"
+    )
 }
 
 </script>
