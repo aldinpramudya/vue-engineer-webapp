@@ -18,11 +18,7 @@
 
             <div v-if="loading" class="text-gray-500">Loading...</div>
 
-            <!-- ========================= -->
-            <!-- DISPLAY YEARLY REPORT     -->
-            <!-- ========================= -->
             <div v-for="item in yearlyData" :key="item.month" class="mb-12">
-
                 <h2 class="text-xl font-bold mb-3">
                     {{ item.month_name }}
                 </h2>
@@ -83,9 +79,11 @@
                         </tr>
                     </tbody>
                 </table>
-
             </div>
 
+            <button @click="exportExcelYear" class="mt-4 bg-green-600 text-white px-4 py-2 rounded">
+                Export to Excel
+            </button>
         </div>
     </div>
 </template>
@@ -118,7 +116,6 @@ const loadReportYear = async () => {
             query: { year: year.value },
         });
 
-        // Transformasi per bulan: pisahkan income/expenses
         yearlyData.value = res.data.map((m) => {
             return {
                 ...m,
@@ -134,4 +131,17 @@ const loadReportYear = async () => {
 
     loading.value = false;
 };
+
+//  Export Excel Yearly Report
+const exportExcelYear = () => {
+    if (!year.value) {
+        errorMessage.value = "Masukkan Tahun terlebih dahulu untuk export.";
+        return;
+    }
+
+    window.open(
+        `http://127.0.0.1:8000/api/excel-report-yearly-export?year=${year.value}`,
+        "_blank"
+    )
+}
 </script>
